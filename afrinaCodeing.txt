@@ -1,0 +1,91 @@
+Index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Countdown Timer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="light-theme">
+  <div class="container">
+    <h1>Countdown Timer</h1>
+    <label for="datetime">Select Date & Time:</label>
+    <input type="datetime-local" id="datetime" />
+    <button onclick="startCountdown()">Start</button>
+    <div id="timerDisplay">Countdown not started</div>
+    
+    <div class="theme-toggle">
+      <label>Theme:</label>
+      <button onclick="toggleTheme()">Toggle Light/Dark</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+Style.css
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 2rem;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+.container {
+  max-width: 500px;
+  margin: auto;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px  15px rgba(0, 0, 0, 0.1);
+}
+.light-theme {
+  background-color: #f9f9f9;
+  color: #222;
+}
+Script.js
+let countdownInterval;
+
+function startCountdown() {
+  const input = document.getElementById("datetime").value;
+  const targetDate = new Date(input);
+  const now = new Date();
+
+  if (!input || targetDate <= now) {
+    alert("Please select a valid future date and time.");
+    return;
+  }
+
+  clearInterval(countdownInterval); // Clear any previous countdown
+  updateTimer(targetDate); // Display immediately
+
+  countdownInterval = setInterval(() => updateTimer(targetDate), 1000);
+}
+
+function updateTimer(targetDate) {
+  const now = new Date();
+  const timeDiff = targetDate - now;
+
+  if (timeDiff <= 0) {
+    clearInterval(countdownInterval);
+    document.getElementById("timerDisplay").innerHTML = "Countdown Complete!";
+    alert("Time's up!");
+    return;
+  }
+
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+  const seconds = Math.floor((timeDiff / 1000) % 60);
+
+  document.getElementById("timerDisplay").innerHTML =
+    ${days}d ${hours}h ${minutes}m ${seconds}s;
+}
+
+function toggleTheme() {
+  const body = document.body;
+  body.classList.toggle("light-theme");
+  body.classList.toggle("dark-theme");
+}
